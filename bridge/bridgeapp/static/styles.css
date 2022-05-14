@@ -1,0 +1,6 @@
+/* New Thread Form */
+.new-thread {
+    display: flex;
+    flex-flow: column;
+    max-width: 30vw;
+}
