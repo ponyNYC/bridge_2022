@@ -8,16 +8,13 @@
     <link rel="stylesheet" href="../static/stylesheet.css">
 </head>
 <body>
-
     <ul> 
-        {% for x in categories %}
-        <li> {{ x.type }}  
-        </li>
+        {% for category in categories %}
+            <li><a href="{% url 'threads' category.slug %}">
+                {{ category.type }}
+            </a></li>
         {% endfor %}
-        
-        </ul>
-        
-           
+    </ul>
 </body>
 </html>
 
