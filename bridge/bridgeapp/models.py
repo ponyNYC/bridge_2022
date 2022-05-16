@@ -12,5 +12,6 @@ class Thread(models.Model):
 
 class Response(models.Model):
     body=models.TextField(blank=True, null=True)
+    thread=models.ForeignKey(Thread, on_delete=models.CASCADE)
     date=models.DateTimeField(auto_now_add=True)
     

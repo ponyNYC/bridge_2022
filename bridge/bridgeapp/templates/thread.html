@@ -1,5 +1,3 @@
-Hello World!!!!
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,14 +10,19 @@ Hello World!!!!
 <body>
 
     <ul> 
-        {% for category in categories %}
-        <li><a href="{% url 'thread' category.id %}"></a> {{ category.type }}</a>
+        {% for thread in threads %}
+
+        <li>
+            <a href="{% url 'response' thread.id %}"> {{ thread.body }}</a>
         </li>
         {% endfor %}
         
         </ul>
-        
 
+        <form action = "{% url 'new_thread' %}">
+            <input type = "submit" value = "Create a New Thread">
+        </form>
+           
 </body>
 </html>
 

@@ -11,13 +11,13 @@
 
     <ul> 
         {% for x in categories %}
-        <li> {{ x.type }}  
+        <li><a href="{% url 'thread' x.type %}"> {{ x.type }}</a>
         </li>
         {% endfor %}
         
         </ul>
         
-           
+
 </body>
 </html>
 
