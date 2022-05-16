@@ -13,5 +13,3 @@ urlpatterns = [
     path('threads/new', BridgeCreateView.as_view(), name='new_thread'),
     path('updateresponse/', BridgeUpdateView.as_view(), name='update'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-print(str(urlpatterns))
