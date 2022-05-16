@@ -30,18 +30,24 @@ class BridgeCategoryView(View):
        )
 
 class BridgeThreadView(View):
-    def get(self, request):
-       categories = Category.objects.all()
+    def get(self, request, category_slug):
+        chosen_category = Category.objects.get(slug=category_slug)
+        chosen_slug = Category.objects.get(slug=category_slug)
 
-       return render(
-           request=request,
-           template_name='thread.html',
-           context={
-               'categories': categories,
-           },
-       )
+        threads = Thread.objects.filter(categories=chosen_category).order_by('-date')
 
-class BridgeResponseView(View):
+        return render(
+            request=request,
+            template_name='thread.html',
+            context={
+                'chosen_category': chosen_category,
+                'threads': threads,
+                # 'type': category_type,
+                'slug': chosen_slug,
+            },
+        ) 
+
+  class BridgeResponseView(View):
     def get(self, request):
        categories = Category.objects.all()
 
