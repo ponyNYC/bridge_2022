@@ -1,6 +1,6 @@
 import imp
 from django.urls import path
-from bridgeapp.views import BridgeHomeView, BridgeCategoryView, BridgeThreadView, BridgeResponseView, BridgeCreateView, BridgeUpdateView
+from bridgeapp.views import BridgeCategoryView, BridgeThreadView, BridgeResponseView, BridgeCreateView, BridgeUpdateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.template.defaultfilters import slugify
