@@ -1,23 +1,9 @@
-from ast import Pass
-import re
 from django.shortcuts import render, redirect
 from django.views import View
 from bridgeapp.models import Category, Thread, Response
 from bridgeapp.forms import ResponseForm
 from bridgeapp.forms import NewThreadForm
 from datetime import date
-
-class BridgeHomeView(View):
-    def get(self, request):
-       categories = Category.objects.all()
-
-       return render(
-           request=request,
-           template_name='bridge.html',
-           context={
-               'categories': categories,
-           },
-       ) 
 
 class BridgeCategoryView(View):
     def get(self, request):
@@ -29,23 +15,40 @@ class BridgeCategoryView(View):
            context={
                'categories': categories,
            },
-       ) 
+       )
 
+# class BridgeThreadView(View):
+#     def get(self, request, category_id):
+#         categories = Category.objects.get(type=category_id)
+#         print(categories)
+#         threads = Thread.objects.filter(categories=categories).order_by('date')
+#         print("Here in BridgeThreadView!")
+
+#         return render(
+#            request=request,
+#            template_name='thread.html',
+#            context={
+#                'categories': categories,
+#                'threads' : threads,
+#            },
+#        ) 
 class BridgeThreadView(View):
-    def get(self, request, category_id):
-        categories = Category.objects.get(type=category_id)
-        print(categories)
-        threads = Thread.objects.filter(categories=categories).order_by('date')
-        print("Here in BridgeThreadView!")
+    def get(self, request, category_slug):
+        chosen_category = Category.objects.get(slug=category_slug)
+        chosen_slug = Category.objects.get(slug=category_slug)
+
+        threads = Thread.objects.filter(categories=chosen_category).order_by('-date')
 
         return render(
-           request=request,
-           template_name='thread.html',
-           context={
-               'categories': categories,
-               'threads' : threads,
-           },
-       ) 
+            request=request,
+            template_name='thread.html',
+            context={
+                'chosen_category': chosen_category,
+                'threads': threads,
+                # 'type': category_type,
+                'slug': chosen_slug,
+            },
+        ) 
 
 class BridgeResponseView(View):
     def get(self, request, thread_id):
@@ -78,7 +81,7 @@ class BridgeResponseView(View):
 class BridgeCreateView(View):
     """Handles the new_thread.html page"""
     def get(self, request):
-        # """Display page and present NewThreadForm"""
+        """Display page and present NewThreadForm"""
         categories = Category.objects.all()
         form = NewThreadForm()
         year = date.today().year
@@ -105,9 +108,7 @@ class BridgeCreateView(View):
                 category = Category.objects.get(id=cat_id)
                 thread.categories.add(category)
             id = cat_ids[0]
-        # Redirect to the todo homepage
-        return redirect('categories')
-
+        return redirect('categories', id)
 
 class BridgeUpdateView(View):
     def get(self, request, response_id):
