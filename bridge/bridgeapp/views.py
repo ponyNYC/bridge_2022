@@ -99,16 +99,17 @@ class BridgeCreateView(View):
     def post(self, request):
         """Get form data and create new thread"""
         form = NewThreadForm(request.POST)
-        id = 0
+        slug = None
         if form.is_valid():
             question = form.cleaned_data['body']
             cat_ids = form.cleaned_data['category_ids']
             thread = Thread.objects.create(body=question)
             for cat_id in cat_ids:
                 category = Category.objects.get(id=cat_id)
+                if slug is None:
+                    slug = category.slug
                 thread.categories.add(category)
-            id = cat_ids[0]
-        return redirect('categories', id)
+        return redirect('threads', slug)
 
 class BridgeUpdateView(View):
     def get(self, request, response_id):
@@ -128,7 +129,6 @@ class BridgeUpdateView(View):
            },
        ) 
     def post(self, request, response_id):
-        response_obj = Response.objects.filter(id=response_id)
         response_obj2 = Response.objects.get(id=response_id)
         thread_id = response_obj2.thread_id
 
@@ -136,8 +136,9 @@ class BridgeUpdateView(View):
             form = ResponseForm(request.POST)
             if form.is_valid():
                 response_body = form.cleaned_data['body']
-                response_obj.update(body=response_body)
+                response_obj2.body=response_body
+                response_obj2.save()
         elif 'delete' in request.POST:
-            response_obj.delete()
+            response_obj2.delete()
 
         return redirect('response', thread_id)

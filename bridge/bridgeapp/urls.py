@@ -7,8 +7,9 @@ from django.template.defaultfilters import slugify
 
 urlpatterns = [
     path('', BridgeCategoryView.as_view(), name='categories'),
+    path('categories/<str:category_slug>', BridgeThreadView.as_view(), name='threads'),
     path('categories/thread/<int:thread_id>', BridgeResponseView.as_view(), name='response'),
     path('updateresponse/<int:response_id>', BridgeUpdateView.as_view(), name='update'),
-    path('threads/<str:category_slug>', BridgeThreadView.as_view(), name='threads'),
-    path('threads/new', BridgeCreateView.as_view(), name='new_thread'),
+    path('thread/new', BridgeCreateView.as_view(), name='new_thread'),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
