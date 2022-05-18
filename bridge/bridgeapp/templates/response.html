@@ -1,0 +1,23 @@
+
+<body>
+
+    <ul> 
+        {% for x in responses %}
+        <li>
+            <a href="{% url 'update' x.id %}"> {{ x.body }}</a>
+        </li>
+        {% endfor %}
+        
+        </ul>
+
+        <form action = "{% url 'response' id %}" method="POST">
+            {% csrf_token %}
+            {{ response_form }}           
+            <input type = "submit" name = "create" value = "Create A Response"/>
+        </form>
+        
+
+</body>
+<a href="{% url 'categories'  %} ">Return Home </a>
+</html>
+

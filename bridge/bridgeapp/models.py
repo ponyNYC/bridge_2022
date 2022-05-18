@@ -7,6 +7,10 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.type)
+        return super(Category, self).save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.type)
         super(Category, self).save(*args, **kwargs)
 class Thread(models.Model):
     # post_id=models.AutoField(primary_key=True)
@@ -16,5 +20,5 @@ class Thread(models.Model):
 
 class Response(models.Model):
     body=models.TextField(blank=True, null=True)
+    thread=models.ForeignKey(Thread, on_delete=models.CASCADE)
     date=models.DateTimeField(auto_now_add=True)
-    

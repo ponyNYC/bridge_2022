@@ -12,7 +12,7 @@
     <ol>
         {% for thread in threads %}
             <li><div class="threadDiv">
-                <a href="#">
+                <a href="{% url 'response' thread.id %}">
                     Q{{ forloop.counter }}: {{ thread.body }}
                 </a>
                 Created: {{ thread.date }}
@@ -20,6 +20,10 @@
         {% endfor %}
     </ol>
       
+    <form action = "{% url 'new_thread' %}">
+        <input type = "submit" value = "Create a New Thread">
+    </form>
+    
 </body>
 </html>
 

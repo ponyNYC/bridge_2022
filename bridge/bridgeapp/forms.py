@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category
+from bridgeapp.models import Category, Thread, Response
 
 CATEGORIES = Category.objects.all()
 CAT_CHOICES = [(f"{category.id}", f"{category.type}") for category in CATEGORIES]
@@ -11,3 +11,6 @@ class NewThreadForm(forms.Form):
     widget=forms.CheckboxSelectMultiple, choices=CAT_CHOICES,
     required=True
     )
+
+class ResponseForm(forms.Form):
+    body = forms.CharField(label='Add note', max_length=255)
