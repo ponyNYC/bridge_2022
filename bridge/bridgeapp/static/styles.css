@@ -1,13 +1,9 @@
-body{background-color: whitesmoke;}
-
-
-
-
-
-
+/* body {
+    background-color: whitesmoke;
+} */
 
 /* style for Thread div class */
-.threadDiv {
+/* .threadDiv {
     display: flex;
     flex-flow: column;
     max-width: auto;
@@ -15,7 +11,7 @@ body{background-color: whitesmoke;}
     margin: 10px;
     padding: 3px;
     border: 2px outset darkblue;
-    background-color: lightblue;    
+    background-color: lightblue;
     text-align: left;
     text-indent: 5px;
 }
@@ -23,11 +19,4 @@ body{background-color: whitesmoke;}
 ol {
     list-style-type: square;
     list-style-position: outside;
-  }
-
-/* New Thread Form */
-.new-thread {
-    display: flex;
-    flex-flow: column;
-    max-width: 30vw;
-}
+} */

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bridge App</title>
+        <link rel="stylesheet" href="/static/styles.css" />
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="{% url 'home' %} "><img src="/static/images/bridge.png" /></a>
+                <ul>
+                    {% for category in categories %}
+                    <li> <a
+                        href="{% url 'category' category_id=category.id category_slug=category.type|slugify %}"
+                    >
+                        {{ category.type }}
+                    </a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </header>
+        {% block main %}
+        <main>
+            <h1>Welcome to Bridge</h1>
+            <ul>
+                {% for category in categories %}
+                <li>
+                    <a
+                        href="{% url 'category' category_id=category.id category_slug=category.type|slugify %}"
+                    >
+                        {{ category.type }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </main>
+        {% endblock %}
+        <footer>
+            <p>&copy; {{ year }} by JTC team Bridge</p>
+            <nav>
+                <ul>
+                    <li>
+                        List of Developer GitHub profile links
+                    </li>
+                </ul>
+            </nav>
+        </footer>
+    </body>
+</html>

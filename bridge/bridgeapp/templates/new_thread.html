@@ -1,42 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Bridge App</title>
-        <link rel="stylesheet" href="/static/styles.css" />
-    </head>
-    <body>
-        <!-- <header class="header">
-            <nav class="header-nav">
-                <div class="logo"><img src="../static/image/bridge.png"</div>
-                <ul class="category-nav">
-                    {% for category in categories %}
-                    <li class="catergory-nav-item">{{ category.type }}</li>
-                    {% endfor %}
-                </ul>
-            </nav>
-        </header> -->
-        <main class="main-content">
-            <form
-                class="new-thread"
-                action="{% url 'new_thread' %}"
-                method="POST"
-            >
-                {% csrf_token %} {{ thread_form }}
-                <input type="submit" name="create" value="Submit" />
-            </form>
-        </main>
-        <!-- <footer class="footer">
-            <p class="copy-right">&copy; {{ year }} by JTC team Bridge</p>
-            <nav class="footer-nav">
-                <ul class="profile-nav">
-                    <li class="dev-profile">
-                        List of Developer GitHub profile links
-                    </li>
-                </ul>
-            </nav>
-        </footer> -->
-    </body>
-</html>
+{% extends 'home.html' %}
+
+{% block main %}
+    <form
+        class="new-thread"
+        action="{% url 'new_thread' %}"
+        method="POST"
+    >
+        {% csrf_token %}
+        {{ thread_form }}
+        <input type="submit" name="create" value="Submit" />
+    </form>
+{% endblock %}
