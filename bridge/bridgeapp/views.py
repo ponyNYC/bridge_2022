@@ -64,15 +64,16 @@ class BridgeCategoryView(View):
     def post(self, request, category_id, category_slug):
         """Get form data and create new thread"""
         form = ThreadForm(request.POST)
-        id, slug = 0, None
+        id, slug = category_id, category_slug
         if form.is_valid():
             data = form.cleaned_data
             question, cat_ids = data['body'], data['category_ids']
-            thread = Thread.objects.create(body=question)
-            for cat_id in cat_ids:
-                category = Category.objects.get(id=cat_id)
-                thread.categories.add(category)
-            id, slug = cat_ids[0], slugify(Category.objects.get(id=cat_ids[0]).type)
+            if cat_ids:
+                thread = Thread.objects.create(body=question)
+                for cat_id in cat_ids:
+                    category = Category.objects.get(id=cat_id)
+                    thread.categories.add(category)
+                id, slug = cat_ids[0], slugify(Category.objects.get(id=cat_ids[0]).type)
         return redirect('category', category_id=id, category_slug=slug)
 
 # class BridgeResponseView(View):
