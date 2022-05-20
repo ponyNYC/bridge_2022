@@ -1,29 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../static/styles.css">
-</head>
-<body>
-    <h2>{{ chosen_category.type }} </h2>
-    <ol>
-        {% for thread in threads %}
-            <li><div class="threadDiv">
-                <a href="{% url 'response' thread.id %}">
-                    Q{{ forloop.counter }}: {{ thread.body }}
-                </a>
-                Created: {{ thread.date }}
-            </div></li>
+{% extends 'home.html' %} {% block main %}
+    <h1>Question and Responses:</h1>
+    <h3>{{ thread.body }}</h3>
+    <ul>
+        {% for response in responses %}
+            <li>{{ response.body }}&nbsp;<a href="{% url 'thread' thread_id=thread.id resp_id=response.id %}">Edit</a></li>
         {% endfor %}
-    </ol>
-      
-    <form action = "{% url 'new_thread' %}">
-        <input type = "submit" value = "Create a New Thread">
+    </ul>
+    <form action="{% url 'thread' thread_id=thread.id resp_id=id %}" method="POST">
+        {% csrf_token %}
+        {{ response_form }}
+        <input type="submit" name="create" value="Create" />
+        <input type="submit" name="update" value="Update" />
+        <input type="submit" name="remove" value="Remove" />
     </form>
-    
-</body>
-</html>
-
+{% endblock %}
