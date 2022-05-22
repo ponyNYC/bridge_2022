@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.text import slugify
 from .models import Category, Thread, Response
-from .forms import InputForm, ThreadForm
+from .forms import ResponseForm, ThreadForm
 from datetime import date
 
 CATEGORIES = Category.objects.all()
@@ -26,7 +26,7 @@ class BridgeCategoryView(View):
     def get(self, request, category_id, category_slug):
         category = Category.objects.get(id=category_id)
         threads = Thread.objects.filter(categories=category).order_by('-date')
-        form = ThreadForm(initial={'body': 'What do you want to ask?'})
+        form = ThreadForm()
 
         return render(
             request=request,
@@ -52,7 +52,6 @@ class BridgeCategoryView(View):
                 for cat_id in cat_ids:
                     category = Category.objects.get(id=cat_id)
                     thread.categories.add(category)
-        delete_commented_out_code
                 id, slug = cat_ids[0], slugify(
                     Category.objects.get(id=cat_ids[0]).type)
 
@@ -63,8 +62,7 @@ class BridgeThreadView(View):
     def get(self, request, thread_id, resp_id):
         thread = Thread.objects.get(id=thread_id)
         responses = Response.objects.filter(thread=thread)
-        form = InputForm(initial={
-            'body': 'Write a response to the question.' if not resp_id else Response.objects.get(id=resp_id).body})
+        form = ResponseForm(initial={'body': Response.objects.get(id=resp_id).body if resp_id else ''})
 
         return render(
             request=request,
