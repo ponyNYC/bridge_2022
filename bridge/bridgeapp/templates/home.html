@@ -11,6 +11,7 @@
         <header>
             <nav>
                 <a href="{% url 'home' %} "><img src="/static/images/bridge.png" /></a>
+                <h2>Spanning Questions And Answers</h2>
                 <ul>
                     {% for category in categories %}
                     <li> <a
@@ -21,10 +22,12 @@
                     {% endfor %}
                 </ul>
             </nav>
+            <hr>
         </header>
         {% block main %}
         <main>
             <h1>Welcome to Bridge</h1>
+            <p>Bridge is a question/answer platform for the justice-involved community, including friends and family of justice-involved persons. Its purpose is to connect those with questions about going to, being in, or coming home from prison with those who know the answers. Users can browse question threads, create new questions, and respond to questions. Questions may be assigned to one or all of these categories: Pre-Commitment (going to); Currently Incarcerated (being in); and Post-Release (coming home). </p>
             <ul>
                 {% for category in categories %}
                 <li>

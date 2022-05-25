@@ -10,10 +10,11 @@ class ResponseForm(forms.Form):
         required=True,
         label='',
         widget=forms.Textarea(attrs={
-            'rows': '2',
+            'rows': '3',
             'cols': '50',
-            'placeholder': 'Write a response here.'
-            }))
+            'autofocus': True,
+            'placeholder': 'Write a response here...'
+        }))
 
 
 class ThreadForm(forms.Form):
@@ -21,13 +22,15 @@ class ThreadForm(forms.Form):
         required=True,
         label='',
         widget=forms.Textarea(attrs={
-            'rows': '2',
+            'rows': '3',
             'cols': '50',
-            'placeholder': 'Post a question here.'
-            }))
+            'autofocus': True,
+            'placeholder': 'Type a new question here then assign categories below...'
+        }))
+
     category_ids = forms.MultipleChoiceField(
         required=True,
-        label='Check applicable categories',
+        label='Applicable categories (deselect as needed)',
         widget=forms.CheckboxSelectMultiple(attrs={'checked': True}),
         choices=CAT_CHOICES,
     )
