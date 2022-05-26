@@ -1,9 +1,9 @@
 {% extends 'home.html' %} {% block main %}
-    <h1>Question and Responses:</h1>
+    <h2>/ Selected Thread /</h2>
     <h3>{{ thread.body }}</h3>
     <ul>
         {% for response in responses %}
-            <li>{{ response.body }}&nbsp;<a href="{% url 'thread' thread_id=thread.id resp_id=response.id %}">Edit</a></li>
+            <li>{{ response.body }} &nbsp;<a href="{% url 'thread' thread_id=thread.id resp_id=response.id %}">(...edit response)</a></li>
         {% endfor %}
     </ul>
     <form action="{% url 'thread' thread_id=thread.id resp_id=id %}" method="POST">

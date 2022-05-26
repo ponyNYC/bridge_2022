@@ -62,7 +62,8 @@ class BridgeThreadView(View):
     def get(self, request, thread_id, resp_id):
         thread = Thread.objects.get(id=thread_id)
         responses = Response.objects.filter(thread=thread)
-        form = ResponseForm(initial={'body': Response.objects.get(id=resp_id).body if resp_id else ''})
+        form = ResponseForm(initial={'body': Response.objects.get(
+            id=resp_id).body if resp_id else ''})
 
         return render(
             request=request,
