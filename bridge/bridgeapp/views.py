@@ -5,11 +5,14 @@ from .models import Category, Thread, Response
 from .forms import ResponseForm, ThreadForm
 from datetime import date
 
+# Set global variable for all items in Category table
 CATEGORIES = Category.objects.all()
+# Set global variable for today's date
 CUR_YEAR = date.today().year
 
 
 class BridgeHomeView(View):
+    """Home URL view - Display 3 category options"""
     def get(self, request):
 
         return render(
@@ -23,7 +26,8 @@ class BridgeHomeView(View):
 
 
 class BridgeCategoryView(View):
-    def get(self, request, category_id, category_slug):
+    """Get Thread table from database and display threads associated with Category selected on Home Page"""
+    def get(self, request, category_id, category_slug):  #category_slug needed for UI
         category = Category.objects.get(id=category_id)
         threads = Thread.objects.filter(categories=category).order_by('-date')
         form = ThreadForm()
@@ -41,7 +45,7 @@ class BridgeCategoryView(View):
         )
 
     def post(self, request, category_id, category_slug):
-        """Get form data and create new thread"""
+        """Create new thread & select applicable categories- Many to many relationship between categories and threads"""
         form = ThreadForm(request.POST)
         id, slug = category_id, category_slug
         if form.is_valid():
@@ -55,10 +59,11 @@ class BridgeCategoryView(View):
                 id, slug = cat_ids[0], slugify(
                     Category.objects.get(id=cat_ids[0]).type)
 
-        return redirect('category', category_id=id, category_slug=slug)
+        return redirect('category', category_id=id, category_slug=slug)  #redirects to first selected Category
 
 
 class BridgeThreadView(View):
+    """Get Response table from database and display responses associated with Thread selected"""
     def get(self, request, thread_id, resp_id):
         thread = Thread.objects.get(id=thread_id)
         responses = Response.objects.filter(thread=thread)
@@ -79,7 +84,7 @@ class BridgeThreadView(View):
         )
 
     def post(self, request, thread_id, resp_id):
-        # return redirect('response', thread_id)
+        """Autopopulate Response Form and allow for Create, Update or Delete of ID"""
         form = ResponseForm(request.POST)
         if form.is_valid():
             resp_text = form.cleaned_data['body']
