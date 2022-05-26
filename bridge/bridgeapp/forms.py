@@ -6,6 +6,7 @@ CAT_CHOICES = [(f"{category.id}", f"{category.type}")
 
 
 class ResponseForm(forms.Form):
+    """Form used for Responses to Threads"""
     body = forms.CharField(
         required=True,
         label='',
@@ -18,6 +19,7 @@ class ResponseForm(forms.Form):
 
 
 class ThreadForm(forms.Form):
+    """Form used for creation of Threads"""
     body = forms.CharField(
         required=True,
         label='',
