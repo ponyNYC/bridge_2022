@@ -28,7 +28,7 @@ To clone using SSH run the following command:
 $ git clone git@github.com:ponyNYC/bridge_2022.git <your_project_directory_name>
 ```
 
-Create a Python virtual environment and activate it in your local project: (assuming you already have Python installed)
+Create a Python virtual environment and activate it in your local project: (assuming you already have Python3 installed)
 
 ```bash
 $ cd <your_project_directory_name>
@@ -42,7 +42,19 @@ Install the packages from `requirements.txt`:
 $ pip install -r requirements.txt
 ```
 
-Migrate to apply database schema and populate tables and fields per the models:
+Then you need to create a `SECRET_KEY` that is not committed to source control, but is necessary for running the app. In the same directory as `<your_project_directory_name>/bridge/bridge/settings.py` file, create a `.env` file and, in it, save a secret key that you create. You may generate a key in the terminal like so:
+
+```bash
+$ shasum<<<test
+```
+
+A hash will be generated and printed to the terminal, which you can use as the key, or you can just type a string of alphanumberics mixed with punctuation symbols as you like, and save it in the `.env` file, like so:
+
+```.env
+SECRET_KEY=<the_hash_you_generated>
+```
+
+Next migrate to apply database schema and populate tables and fields per the models:
 
 ```bash
 $ cd bridge
@@ -55,18 +67,7 @@ Then get the server running:
 $ python3 manage.py runserver
 ```
 
-And you should see the app's homepage at `localhost:8000/bridge/`
-
-Next use the Django shell to pre-populate the database with the three categories of questions for the app to work properly, like so:
-
-```bash
-$ python3 manage.py shell
->>> from bridgeapp.models import Category
->>> Category.objects.create(type='Pre-commitment')
->>> Category.objects.create(type='Currently Incarcerated')
->>> Category.objects.create(type='Post-release')
->>> exit()
-```
+And you should see the app's homepage at `localhost:8000/bridge/`.
 
 You now have a Bridge app in which people may post questions and write answers to the questions.
 
