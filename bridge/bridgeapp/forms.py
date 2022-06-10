@@ -1,10 +1,6 @@
 from django import forms
-from bridgeapp.models import Category
-
-# global variable with assigned loop to create a dictionary of category.id : category.type key:value pairs
-CAT_CHOICES = [(f"{category.id}", f"{category.type}")
-               for category in Category.objects.all()]
-
+from django.db import connection
+from .models import Category
 
 class ResponseForm(forms.Form):
     """Form used for Responses to Threads"""
@@ -45,5 +41,5 @@ class ThreadForm(forms.Form):
         # sets default value for check boxes to checked to prevent submission of form with no boxes checked
         widget=forms.CheckboxSelectMultiple(attrs={'checked': True}),
         # list of check boxes labeled with values from CAT_CHOICES global variable
-        choices=CAT_CHOICES,
+        choices=[(f"{category.id}", f"{category.type}") for category in Category.objects.all()] if 'bridgeapp_category' in connection.introspection.table_names() else [],
     )
