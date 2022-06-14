@@ -5,17 +5,17 @@ from .models import Category, Thread, Response
 from .forms import ResponseForm, ThreadForm
 from datetime import date
 
-# Set global variable for all items in Category table
+# globals (categories, current year) for all views
 CATEGORIES = Category.objects.all()
-# Set global variable for today's date
 CUR_YEAR = date.today().year
 
 
 class BridgeHomeView(View):
-    """Home URL view - Display 3 category options"""
+    """View for home page"""
 
     def get(self, request):
-
+        """GET home page"""
+        # render with categories and current year
         return render(
             request=request,
             template_name='home.html',
@@ -27,16 +27,17 @@ class BridgeHomeView(View):
 
 
 class BridgeCategoryView(View):
-    """Get Thread table from database and display threads associated with Category selected on Home Page"""
+    """View for single category page"""
 
-    def get(self, request, category_id, category_slug):  # category_slug needed for UI
-        # assigns list of category object id's to category variable
+    def get(self, request, category_id, category_slug): # slug for URL
+        """GET single category page"""
+        # get requested category from DB
         category = Category.objects.get(id=category_id)
-        # assigns threads filtered by category and ordered by date to threads variable
+        # get all threads under category in desc chronological order
         threads = Thread.objects.filter(categories=category).order_by('-date')
-        # assigns ThreadForm from forms.py to form variable
+        # get ThreadForm for POST action
         form = ThreadForm()
-
+        # render with category, threads & ThreadForm
         return render(
             request=request,
             template_name='category.html',
@@ -50,43 +51,45 @@ class BridgeCategoryView(View):
         )
 
     def post(self, request, category_id, category_slug):
-        """Create new thread & select applicable categories- Many to many relationship between categories and threads"""
+        """POST thread in single category page"""
+         # get POST data from ThreaForm
         form = ThreadForm(request.POST)
-        # assigns category_id parameter to id variable and category_slug parameter to slug variable
+        # assign URL parameters to id, slug
         id, slug = category_id, category_slug
-        # if statement tests whether the form is valid, and if not valid the form will not post
+        # check if form data is valid
         if form.is_valid():
-            # assigns cleaned form data (via built-in Django method) to the data variable
+            # clean out valid data as 'data'
             data = form.cleaned_data
-            # assigns the data entered in form by user to question and cat_ids variables
+            # assign body, category_ids values in data to question, cat_ids
             question, cat_ids = data['body'], data['category_ids']
-            # tests whether user has selected at least 1 category and prevents form submission if not true
+            # check if user selected > 1 category
             if cat_ids:
-                # assigns newly created Thread object containing user-entered data to thread variable
+                # create a new thread
                 thread = Thread.objects.create(body=question)
-                # loops through category ids selected by user and adds selected categories as foreign key to the current thread
+                # assign all categories selected by user to new thread
                 for cat_id in cat_ids:
                     category = Category.objects.get(id=cat_id)
                     thread.categories.add(category)
-                # assigns the first item in the cat_ids list to id variable and assigns the slugified cat_ids type attribute to slug variable
+                # aassign values of first category to id & slug for redirection
                 id, slug = cat_ids[0], slugify(
                     Category.objects.get(id=cat_ids[0]).type)
-        # redirects to view for first selected Category
+        # redirect to single category page
         return redirect('category', category_id=id, category_slug=slug)
 
 
 class BridgeThreadView(View):
-    """Get Response table from database and display responses associated with Thread selected"""
+    """View for single thread page"""
 
     def get(self, request, thread_id, resp_id):
-        # assigns the selected thread_id object to thread variable
+        """GET single thread page"""
+        # get requested thread from DB
         thread = Thread.objects.get(id=thread_id)
-        # assigns Response objects filtered by selected thread to responses variable
-        responses = Response.objects.filter(thread=thread)
-        # assigns ResponseForm from forms.py to form variable with the initial value of the text of the selected response
+        # get all responses to thread in desc chronological order
+        responses = Response.objects.filter(thread=thread).order_by('-date')
+        # get ResponseForm for POST action & prepopulate if updating
         form = ResponseForm(initial={'body': Response.objects.get(
             id=resp_id).body if resp_id else ''})
-
+        # render with thread, responses, ResponseForm & response_id
         return render(
             request=request,
             template_name='thread.html',
@@ -96,27 +99,27 @@ class BridgeThreadView(View):
                 'responses': responses,
                 'response_form': form,
                 'thread': thread,
-                # references selected resp_id and defaults to 0 if none selected
+                # resp_id defaults to 0 ('*/responses')
                 'id': resp_id if resp_id else 0,
             },
         )
 
     def post(self, request, thread_id, resp_id):
-        """Autopopulate Response Form and allow for Create, Update or Delete of ID"""
-        # assigns POST request from ResponseForm to form variable
+        """POST response in single thread page"""
+        # get POST data from ResponseForm
         form = ResponseForm(request.POST)
-        # tests whether form is valid (via built-in Django method)
+        # check if form data is valid
         if form.is_valid():
-            # assigns cleaned form data (via built-in Django method) to the resp_text variable
+            # clean out valid data as 'resp_text'
             resp_text = form.cleaned_data['body']
-            # tests if user selects create button and creates a new Response object with entered text if so
+            # create new response if POST action is 'create'
             if 'create' in request.POST:
                 Response.objects.create(body=resp_text, thread_id=thread_id)
-            # tests if user selects update button and updates the selected Response object with entered text if so
+            # update existing response if POST action is 'update'
             elif 'update' in request.POST:
                 Response.objects.filter(id=resp_id).update(body=resp_text)
-            # tests if user selects remove button and deletes the selected Response object if so
+            # remove existing response if POST action is 'remove'
             elif 'remove' in request.POST:
                 Response.objects.filter(id=resp_id).delete()
-        # redirects to thread view page
+        # redirect to single thread page
         return redirect('thread', thread_id, 0)
