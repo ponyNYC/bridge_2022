@@ -3,43 +3,39 @@ from django.db import connection
 from .models import Category
 
 class ResponseForm(forms.Form):
-    """Form used for Responses to Threads"""
-    # simple form with a single CharField
+    """Form to create/update responses to threads"""
+    # required <textarea> field using placeholder as label
     body = forms.CharField(
         required=True,
         label='',
         widget=forms.Textarea(attrs={
             'rows': '3',
             'cols': '50',
-            # causes cursor to focus on text input area upon page load
             'autofocus': True,
-            # inserts placeholder text into text input area as prompt for user
             'placeholder': 'Write a response here...'
         }))
 
 
 class ThreadForm(forms.Form):
-    """Form used for creation of Threads"""
+    """Form to generate threads (questions)"""
+
+    # required <textarea> field using placeholder as label
     body = forms.CharField(
-        # requires entry in this field before form can be submitted
         required=True,
         label='',
         widget=forms.Textarea(attrs={
             'rows': '3',
             'cols': '50',
-            # causes cursor to focus on text input area upon page load
             'autofocus': True,
-            # inserts placeholder text into text input area as prompt for user
             'placeholder': 'Type a new question here then assign categories below...'
         }))
-    # assigns a multiple choice field to category_ids variable, allowing user to select categories for newly created thread
+
+    # required multi-select checkboxes for assigning categories to thread
     category_ids = forms.MultipleChoiceField(
-        # requires entry in this field before form can be submitted
         required=True,
-        # adds label adjacent to input area as prompt to user
         label='Applicable categories (deselect as needed)',
-        # sets default value for check boxes to checked to prevent submission of form with no boxes checked
-        widget=forms.CheckboxSelectMultiple(attrs={'checked': True}),
-        # list of check boxes labeled with values from CAT_CHOICES global variable
+        # default to all boxes checked
+        widget=forms.CheckboxSelectMultiple( attrs={'checked': True}),
+        # categories as labels (none to work around migration issue)
         choices=[(f"{category.id}", f"{category.type}") for category in Category.objects.all()] if 'bridgeapp_category' in connection.introspection.table_names() else [],
     )
