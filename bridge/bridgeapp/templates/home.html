@@ -21,6 +21,13 @@
                     </a></li>
                     {% endfor %}
                 </ul>
+                {% if user.is_authenticated %}
+                <h3>You are logged in as: {{ user.username }} </h3>
+                <h4>Click here to <a href="{% url 'logout' %}">log out</a></h4>
+                {% else %} 
+                Click here to <a href="{% url 'login' %}">login</a> / 
+                Click here to <a href="{% url 'register' %}">register</a> 
+                {% endif %} 
             </nav>
             <hr>
         </header>
