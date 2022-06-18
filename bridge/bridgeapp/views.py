@@ -53,7 +53,7 @@ class BridgeCategoryView(View):
 
     def post(self, request, category_id, category_slug):
         """POST thread in single category page"""
-        # get POST data from ThreaForm
+        # get POST data from ThreadForm
         form = ThreadForm(request.POST)
         # assign URL parameters to id, slug
         id, slug = category_id, category_slug
