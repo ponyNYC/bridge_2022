@@ -1,27 +1,45 @@
-{% extends 'home.html' %} {% block main %}
-<h2><u>{{ category.type }}</u></h2>
+{% extends 'home.html' %}
+{% block h1 %}Bridge Knowledge{% endblock %}
+{% block main %}
 <section>
-    <ol>
-        {% for thread in threads %}
-        <li>
-            <div class="threadDiv">
-                <a href="{% url 'thread' thread_id=thread.id resp_id=0 %}">
-                    Q{{ forloop.counter }}: {{ thread.body }}
-                </a>
-                Created: {{ thread.date }}
+    <h1 class="text-center text-white display-5 text-uppercase mb-5 bg-transparent shadow rounded">{{ category.type }}</h1>
+    {% for thread in threads %}
+        <a class="btn message w-100 p-3 pb-1 mb-4 rounded shadow text-decoration-none" href="{% url 'thread' thread_id=thread.id resp_id=0 %}">
+            <p class="text-start"><i class="bi bi-person-circle"></i><i class="bi bi-dash-lg"></i><b>Asked</b> username<i class="bi bi-dash-lg"></i>{{ thread.date }}</p>
+            <p class="text-start fw-bold w-100 d-inline-flex justify-content-between">
+                {{ thread.body }}
+            </p>
+            <p class="text-end text-success"><i class="bi bi-dash-lg"></i>Click to answer in thread</p>
+        </a>
+    {% endfor %}
+</section>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Click to ask a question
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Ask a question and select categories</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'category' category.id category.type|slugify %}" method="POST">
+            <div class="modal-body d-flex flex-column">
+                {% csrf_token %}
+                {{ thread_form }}
             </div>
-        </li>
-        {% endfor %}
-    </ol>
-</section>
-<section>
-    <form
-        action="{% url 'category' category.id category.type|slugify %}"
-        method="POST"
-    >
-        {% csrf_token %}
-        {{ thread_form.as_p }}
-        <input type="submit" name="add" value="Submit" />
-    </form>
-</section>
-{% endblock %}}
+            <div class="modal-footer" id="model-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" name="add" class="btn btn-primary" id="submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block categoryjs %}
+    {% load static %}
+    <script src="{% static 'js/category.js' %}"></script>
+{% endblock %}

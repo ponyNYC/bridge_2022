@@ -9,10 +9,9 @@ class ResponseForm(forms.Form):
         required=True,
         label='',
         widget=forms.Textarea(attrs={
-            'rows': '3',
-            'cols': '50',
+            'rows': '6',
             'autofocus': True,
-            'placeholder': 'Write a response here...'
+            'placeholder': 'Write a new response here.'
         }))
 
 
@@ -24,18 +23,16 @@ class ThreadForm(forms.Form):
         required=True,
         label='',
         widget=forms.Textarea(attrs={
-            'rows': '3',
-            'cols': '50',
+            'rows': '6',
             'autofocus': True,
-            'placeholder': 'Type a new question here then assign categories below...'
+            'placeholder': 'Submission without checking at least one category to which this question relates will not be accepted.'
         }))
 
     # required multi-select checkboxes for assigning categories to thread
     category_ids = forms.MultipleChoiceField(
         required=True,
-        label='Applicable categories (deselect as needed)',
-        # default to all boxes checked
-        widget=forms.CheckboxSelectMultiple( attrs={'checked': True}),
+        label='',
+        widget=forms.CheckboxSelectMultiple(),
         # categories as labels (none to work around migration issue)
         choices=[(f"{category.id}", f"{category.type}") for category in Category.objects.all()] if 'bridgeapp_category' in connection.introspection.table_names() else [],
     )
