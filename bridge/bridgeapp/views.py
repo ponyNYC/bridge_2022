@@ -4,7 +4,8 @@ from django.utils.text import slugify
 from .models import Category, Thread, Response
 from .forms import ResponseForm, ThreadForm
 from datetime import date
-
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 # globals (categories, current year) for all views
 CATEGORIES = Category.objects.all()
 CUR_YEAR = date.today().year
@@ -29,7 +30,7 @@ class BridgeHomeView(View):
 class BridgeCategoryView(View):
     """View for single category page"""
 
-    def get(self, request, category_id, category_slug): # slug for URL
+    def get(self, request, category_id, category_slug):  # slug for URL
         """GET single category page"""
         # get requested category from DB
         category = Category.objects.get(id=category_id)
@@ -52,7 +53,7 @@ class BridgeCategoryView(View):
 
     def post(self, request, category_id, category_slug):
         """POST thread in single category page"""
-         # get POST data from ThreaForm
+        # get POST data from ThreadForm
         form = ThreadForm(request.POST)
         # assign URL parameters to id, slug
         id, slug = category_id, category_slug
@@ -123,3 +124,28 @@ class BridgeThreadView(View):
                 Response.objects.filter(id=resp_id).delete()
         # redirect to single thread page
         return redirect('thread', thread_id, 0)
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('home')
+
+    else:
+        form = UserCreationForm()
+
+    context = {'form': form}
+    return render(request, 'registration/register.html', context)
+
+
+def logout(request):
+    if request.method == 'GET':
+        logout(request)
+    return render(request, 'registration/logged_out.html')
