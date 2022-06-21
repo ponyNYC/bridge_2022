@@ -124,4 +124,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_URL = '/bridge/authentication'
 LOGIN_REDIRECT_URL = '/bridge'
+LOGOUT_REDIRECT_URL = '/bridge'
