@@ -6,6 +6,8 @@ from .forms import ResponseForm, ThreadForm
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
 # globals (categories, current year) for all views
 CATEGORIES = Category.objects.all()
 CUR_YEAR = date.today().year
@@ -118,10 +120,18 @@ class BridgeThreadView(View):
                 Response.objects.create(body=resp_text, thread_id=thread_id)
             # update existing response if POST action is 'update'
             elif 'update' in request.POST:
-                Response.objects.filter(id=resp_id).update(body=resp_text)
-            # remove existing response if POST action is 'remove'
+                if resp_id:
+                    Response.objects.filter(id=resp_id).update(body=resp_text)
+                else:
+                    messages.info(
+                        request, 'You clicked update but the response does not yet exist. Please re-enter your response then click create.')
+                    # remove existing response if POST action is 'remove'
             elif 'remove' in request.POST:
-                Response.objects.filter(id=resp_id).delete()
+                if resp_id:
+                    Response.objects.filter(id=resp_id).delete()
+                else:
+                    messages.info(
+                        request, 'You clicked remove but the response does not yet exist. Please re-enter your response then click create.')
         # redirect to single thread page
         return redirect('thread', thread_id, 0)
 
@@ -135,7 +145,7 @@ class BridgeAuthenticationView(View):
         return render(request, 'registration/authentication.html', context)
 
     def post(self, request):
-        if request.POST.get('submit') == 'sign_in':
+        if request.POST.get('submit') == 'login':
             login_form = AuthenticationForm(request.POST)
             user = authenticate(login_form.username, login_form.password)
             login(request, user)
