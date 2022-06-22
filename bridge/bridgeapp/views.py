@@ -17,14 +17,35 @@ class BridgeHomeView(View):
     def get(self, request):
         """GET home page"""
         # render with categories and current year
+        # login_form = AuthenticationForm()
+        # form = UserCreationForm()
         return render(
             request=request,
             template_name='home.html',
             context={
                 'categories': CATEGORIES,
                 'year': CUR_YEAR,
+                # 'login_form': login_form,
+                # 'form': form
             },
         )
+
+    # def post(self, request):
+    #     if request.POST.get('submit') == 'sign_in':
+    #         login_form = AuthenticationForm(request.POST)
+    #         user = authenticate(login_form.username, login_form.password)
+    #         login(request, user)
+    #         return redirect('home')
+
+    #     else:
+    #         form = UserCreationForm(request.POST)
+    #         if form.is_valid():
+    #             form.save()
+    #             username = form.cleaned_data['username']
+    #             password = form.cleaned_data['password1']
+    #             user = authenticate(username=username, password=password)
+    #             login(request, user)
+    #             return redirect('home')
 
 
 class BridgeCategoryView(View):

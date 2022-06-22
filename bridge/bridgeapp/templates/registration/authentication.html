@@ -8,14 +8,15 @@
     <p>You do not have permission to access that page.</p>
     {% endif %} 
     <h3>Login</h3>
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %} 
+    <form class="form-inline" method="post" action="{% url 'login' %}">
+        <div class="form-group">{% csrf_token %} 
 
         <p>Username: {{ login_form.username }} </p>
         <p>Password: {{ login_form.password }} </p>
 
         <input type="submit" value="login">
         <input type="hidden" name="next" value="{{ next }}">
+        </div>
     </form>
 </section>
 <br><hr>
