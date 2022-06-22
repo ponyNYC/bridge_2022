@@ -131,7 +131,7 @@ class BridgeThreadView(View):
                     Response.objects.filter(id=resp_id).delete()
                 else:
                     messages.info(
-                        request, 'You clicked remove but the response does not yet exist. Please re-enter your response then click create.')
+                        request, 'You clicked remove but the response does not yet exist. Please select the response you wish to remove then click remove.')
         # redirect to single thread page
         return redirect('thread', thread_id, 0)
 
