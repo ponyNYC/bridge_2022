@@ -4,6 +4,9 @@ from django.utils.text import slugify
 from .models import Category, Thread, Response
 from .forms import ResponseForm, ThreadForm
 from datetime import date
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 # globals (categories, current year) for all views
 CATEGORIES = Category.objects.all()
@@ -29,7 +32,7 @@ class BridgeHomeView(View):
 class BridgeCategoryView(View):
     """View for single category page"""
 
-    def get(self, request, category_id, category_slug): # slug for URL
+    def get(self, request, category_id, category_slug):  # slug for URL
         """GET single category page"""
         # get requested category from DB
         category = Category.objects.get(id=category_id)
@@ -52,7 +55,7 @@ class BridgeCategoryView(View):
 
     def post(self, request, category_id, category_slug):
         """POST thread in single category page"""
-         # get POST data from ThreaForm
+        # get POST data from ThreadForm
         form = ThreadForm(request.POST)
         # assign URL parameters to id, slug
         id, slug = category_id, category_slug
@@ -117,9 +120,47 @@ class BridgeThreadView(View):
                 Response.objects.create(body=resp_text, thread_id=thread_id)
             # update existing response if POST action is 'update'
             elif 'update' in request.POST:
-                Response.objects.filter(id=resp_id).update(body=resp_text)
-            # remove existing response if POST action is 'remove'
+                if resp_id:
+                    Response.objects.filter(id=resp_id).update(body=resp_text)
+                else:
+                    messages.info(
+                        request, 'You clicked update but the response does not yet exist. Please re-enter your response then click create.')
+                    # remove existing response if POST action is 'remove'
             elif 'remove' in request.POST:
-                Response.objects.filter(id=resp_id).delete()
+                if resp_id:
+                    Response.objects.filter(id=resp_id).delete()
+                else:
+                    messages.info(
+                        request, 'You clicked remove but the response does not yet exist. Please select the response you wish to remove then click remove.')
         # redirect to single thread page
         return redirect('thread', thread_id, 0)
+
+
+class BridgeAuthenticationView(View):
+    def get(self, request):
+        login_form = AuthenticationForm()
+        form = UserCreationForm()
+
+        context = {'login_form': login_form, 'form': form}
+        return render(request, 'registration/authentication.html', context)
+
+    def post(self, request):
+        if request.POST.get('submit') == 'login':
+            login_form = AuthenticationForm(request.POST)
+            user = authenticate(login_form.username, login_form.password)
+            login(request, user)
+            return redirect('home')
+
+        else:
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
+                user = authenticate(username=username, password=password)
+                login(request, user)
+                return redirect('home')
+
+
+def logout(request):
+    logout(request)

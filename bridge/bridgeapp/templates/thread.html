@@ -1,6 +1,30 @@
 {% extends 'home.html' %} {% block main %}
-    <h2>/ Selected Thread /</h2>
-    <h3>{{ thread.body }}</h3>
+<style>
+    .alert {
+      padding: 10px;
+      background-color: darkblue;
+      color: white;
+      width:fit-content;
+      margin-bottom: 25px;
+    }
+    
+    .closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    .closebtn:hover {
+      color: black;
+    }
+</style>
+
+<h3>{{ thread.body }}</h3>
     <ul>
         {% for response in responses %}
             <li>{{ response.body }} &nbsp;<a href="{% url 'thread' thread_id=thread.id resp_id=response.id %}">(...edit response)</a></li>
@@ -13,4 +37,13 @@
         <input type="submit" name="update" value="Update" />
         <input type="submit" name="remove" value="Remove" />
     </form>
+    <br>
+    {% if messages %}
+        {% for message in messages %}
+            <em><div class="alert" >
+                {{ message }}
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div></em>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

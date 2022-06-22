@@ -1,0 +1,36 @@
+{% extends 'home.html' %} {% block main %}
+<section>
+    {% if login_form.errors %}
+    <p>The input is not valid.</p>
+    {% endif %}
+    
+    {% if next %} 
+    <p>You do not have permission to access that page.</p>
+    {% endif %} 
+    <h3>Login</h3>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %} 
+
+        <p>Username: {{ login_form.username }} </p>
+        <p>Password: {{ login_form.password }} </p>
+
+        <input type="submit" value="login">
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+</section>
+<br><hr>
+<section>
+    <h3>Register</h3>
+    <form method="post" action="{% url 'authentication' %}">
+        {% csrf_token %} 
+
+        {% if form.errors %} 
+        <p>There are errors in the form!</p>
+        {% endif %} 
+
+        {{ form }}
+
+        <input type="submit" value="Register">
+    </form>
+</section>
+{% endblock %}

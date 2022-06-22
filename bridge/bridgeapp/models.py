@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Category(models.Model):
     """model for bridgeapp_category table"""
     type = models.CharField(max_length=50, unique=True)
