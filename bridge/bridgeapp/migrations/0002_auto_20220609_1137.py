@@ -6,7 +6,7 @@ def populate_categories(apps, schema_editor):
     Category = apps.get_model('bridgeapp', 'Category')
     categories = [
         'Pre-commitment',
-        'Currently Incarcerated',
+        'In-custody',
         'Post-release',
     ]
 

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
             scrollpos = window.scrollY;
             if (scrollpos > 100) {
                 navbar.className =
-                    "navbar navbar-expand-md navbar-dark bg-secondary fixed-top shadow-lg";
+                    "navbar navbar-expand-md navbar-dark bg-dark fixed-top shadow-lg";
             } else {
                 navbar.className =
                     "navbar navbar-expand-md navbar-dark fixed-top";

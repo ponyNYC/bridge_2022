@@ -1,4 +1,4 @@
-<p align="center"><img src="./assets/" alt="site screenshot" /></p>
+<p align="center"><img src="./assets/site_screenshot.jpg" alt="site screenshot" /></p>
 <h2 align="center">Bridge App</h2>
 <h4 align="center">Bryan Garrett, Chung Kao, Richard Lee, Anthony Lopez</h4>
 <p align="center">Columbia University - Justice Through Code</p>
