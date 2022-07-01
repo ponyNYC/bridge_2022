@@ -1,6 +1,9 @@
 /* Global Styles */
 
 body {
+    line-height: 1.7;
+    word-spacing: 0.2rem;
+    letter-spacing: 0.1rem;
     background: linear-gradient(
             to bottom,
             rgba(30, 75, 115, 1),
@@ -33,10 +36,12 @@ body {
 /* Main */
 
 .message {
+    hyphens: auto;
     background-color: rgb(193, 216, 228);
 }
 
 .card {
+    hyphens: auto;
     max-width: 20rem;
 }
 

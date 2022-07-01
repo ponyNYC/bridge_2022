@@ -179,7 +179,7 @@ class BridgeAuthenticateView(View):
             if form.is_valid():
                 user = form.save()
                 login(request, user)
-                messages.success(request, f"You're logged in as {user.username}" )
+                messages.success(request, f"Hi, {user.username}" )
                 return redirect(settings.LOGIN_REDIRECT_URL)
             else:
                 messages.error(request, "Invalid information. Please try again.")
@@ -191,7 +191,7 @@ class BridgeAuthenticateView(View):
                 user = authenticate(username=username, password=password)
                 if user is not None:
                     login(request, user)
-                    messages.success(request, f"You're logged in as {username}." )
+                    messages.success(request, f"Hi, {username}." )
                     return redirect(settings.LOGIN_REDIRECT_URL)
                 else:
                     messages.error(request, "Invalid username or password.")
