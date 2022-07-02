@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
         function checkScroll() {
             scrollpos = window.scrollY;
-            if (scrollpos > 500) {
+            if (scrollpos > 450) {
                 navbar.className =
                     "navbar navbar-expand-md navbar-dark bg-dark fixed-top shadow-lg";
 
