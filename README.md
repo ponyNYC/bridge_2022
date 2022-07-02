@@ -67,7 +67,7 @@ Then get the server running:
 $ python3 manage.py runserver
 ```
 
-And you should see the app's homepage at `localhost:8000/bridge/`.
+And you should see the app's homepage at `localhost:8000`.
 
 You now have a Bridge app in which people may post questions and write answers to the questions.
 
