@@ -1,16 +1,108 @@
-{% extends 'home.html' %} {% block main %}
-    <h2>/ Selected Thread /</h2>
-    <h3>{{ thread.body }}</h3>
-    <ul>
-        {% for response in responses %}
-            <li>{{ response.body }} &nbsp;<a href="{% url 'thread' thread_id=thread.id resp_id=response.id %}">(...edit response)</a></li>
-        {% endfor %}
-    </ul>
-    <form action="{% url 'thread' thread_id=thread.id resp_id=id %}" method="POST">
-        {% csrf_token %}
-        {{ response_form }}
-        <input type="submit" name="create" value="Create" />
-        <input type="submit" name="update" value="Update" />
-        <input type="submit" name="remove" value="Remove" />
-    </form>
-{% endblock %}
+{% extends 'base.html' %}
+
+{% block h1 %}Bridge Community{% endblock %}
+
+{% block main %}
+<h1
+    class="text-center text-white display-5 text-uppercase mb-5 bg-transparent shadow rounded"
+>
+    Answers
+</h1>
+<div class="message w-100 p-3 pb-1 mb-4 rounded shadow">
+    <p class="text-start">
+        <i class="bi bi-person-circle"></i><i class="bi bi-dash-lg"></i
+        ><b>Asked</b> {{ thread.user.username }}<i class="bi bi-dash-lg"></i>{{ thread.date }}
+    </p>
+    <p class="fw-bold w-100 d-inline-flex justify-content-between">
+        {{ thread.body }}
+    </p>
+</div>
+{% for response in responses %}
+<a
+    class="btn w-100 p-3 pb-1 mb-4 bg-light rounded shadow text-decoration-none"
+    href="{% url 'thread' thread_id=thread.id resp_id=response.id %}"
+>
+    <p class="text-start">
+        <i class="bi bi-person-circle"></i><i class="bi bi-dash-lg"></i
+        ><b>Answered</b> {{ response.user.username }}<i class="bi bi-dash-lg"></i>{{ response.date }}
+    </p>
+    <p class="text-start fw-bold w-100 d-inline-flex justify-content-between">
+        {{ response.body }}
+    </p>
+    <p class="text-success text-end">
+        <i class="bi bi-dash-lg"></i>Click to edit response
+    </p>
+</a>
+{% endfor %}
+<!-- Button trigger modal -->
+<button
+    type="button"
+    id="response-form-btn"
+    class="btn btn-primary mb-5 shadow"
+    data-bs-toggle="modal"
+    data-bs-target="#staticBackdrop"
+>
+    Write a response
+</button>
+<!-- Modal -->
+<div
+    class="modal fade"
+    id="staticBackdrop"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                    Create, update or delete a response
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <form
+                id="response-form"
+                action="{% url 'thread' thread_id=thread.id resp_id=id %}"
+                method="POST"
+            >
+                <div class="modal-body d-flex flex-column">
+                    {% csrf_token %} {{ response_form }}
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        id="btn-cancel"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+                    {% if id == 0 %}
+                        <button type="submit" name="create" class="btn btn-primary">
+                            Create
+                        </button>
+                    {% else %}
+                        <button type="submit" name="update" class="btn btn-primary">
+                            Update
+                        </button>
+                        <button type="submit" name="remove" class="btn btn-primary">
+                            Remove
+                        </button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+    {% block responsejs %}
+        {% load static %}
+        <script src="{% static 'js/response.js' %}"></script>
+    {% endblock %}
+</div>

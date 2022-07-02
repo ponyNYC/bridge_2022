@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('bridge/', include('bridgeapp.urls')),
+    path('', include('bridgeapp.urls')),
     path('admin/', admin.site.urls),
 ]

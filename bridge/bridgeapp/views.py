@@ -1,8 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils.text import slugify
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.conf import settings
+from django.contrib.auth.models import User
 from .models import Category, Thread, Response
-from .forms import ResponseForm, ThreadForm
+from .forms import ResponseForm, ThreadForm, NewUserForm
 from datetime import date
 
 # globals (categories, current year) for all views
@@ -22,6 +27,7 @@ class BridgeHomeView(View):
             context={
                 'categories': CATEGORIES,
                 'year': CUR_YEAR,
+                'user': request.user,
             },
         )
 
@@ -31,6 +37,8 @@ class BridgeCategoryView(View):
 
     def get(self, request, category_id, category_slug): # slug for URL
         """GET single category page"""
+        # get all users
+        users = User.objects.all()
         # get requested category from DB
         category = Category.objects.get(id=category_id)
         # get all threads under category in desc chronological order
@@ -44,6 +52,8 @@ class BridgeCategoryView(View):
             context={
                 'categories': CATEGORIES,
                 'year': CUR_YEAR,
+                'user': request.user,
+                'users': users,
                 'category': category,
                 'threads': threads,
                 'thread_form': form,
@@ -65,7 +75,7 @@ class BridgeCategoryView(View):
             # check if user selected > 1 category
             if cat_ids:
                 # create a new thread
-                thread = Thread.objects.create(body=question)
+                thread = Thread.objects.create(user=request.user, body=question)
                 # assign all categories selected by user to new thread
                 for cat_id in cat_ids:
                     category = Category.objects.get(id=cat_id)
@@ -82,13 +92,14 @@ class BridgeThreadView(View):
 
     def get(self, request, thread_id, resp_id):
         """GET single thread page"""
+        # get all users
+        users = User.objects.all()
         # get requested thread from DB
         thread = Thread.objects.get(id=thread_id)
         # get all responses to thread in desc chronological order
         responses = Response.objects.filter(thread=thread).order_by('-date')
         # get ResponseForm for POST action & prepopulate if updating
-        form = ResponseForm(initial={'body': Response.objects.get(
-            id=resp_id).body if resp_id else ''})
+        form = ResponseForm(initial={'body': Response.objects.get(id=resp_id).body if resp_id else ''})
         # render with thread, responses, ResponseForm & response_id
         return render(
             request=request,
@@ -96,6 +107,8 @@ class BridgeThreadView(View):
             context={
                 'categories': CATEGORIES,
                 'year': CUR_YEAR,
+                'user': request.user,
+                'users': users,
                 'responses': responses,
                 'response_form': form,
                 'thread': thread,
@@ -114,12 +127,93 @@ class BridgeThreadView(View):
             resp_text = form.cleaned_data['body']
             # create new response if POST action is 'create'
             if 'create' in request.POST:
-                Response.objects.create(body=resp_text, thread_id=thread_id)
+                Response.objects.create(user=request.user, body=resp_text, thread_id=thread_id)
             # update existing response if POST action is 'update'
             elif 'update' in request.POST:
-                Response.objects.filter(id=resp_id).update(body=resp_text)
+                # response being updated
+                response = Response.objects.get(id=resp_id)
+                # only allow author to update response
+                if response.user_id == request.user.id:
+                    if resp_text != response.body:
+                        Response.objects.filter(id=resp_id).update(body=resp_text)
+                    else:
+                        messages.error(request, 'You\'ve made no changes. Try again.')
+                else:
+                    messages.error(request, 'You don\'t have permission to edit the response.')
             # remove existing response if POST action is 'remove'
             elif 'remove' in request.POST:
-                Response.objects.filter(id=resp_id).delete()
+                # response being updated
+                response = Response.objects.get(id=resp_id)
+                # only allow author to delete response
+                if response.user_id == request.user.id:
+                    Response.objects.filter(id=resp_id).delete()
+                else:
+                    messages.error(request, "You don't have permission to remove the response.")
+
         # redirect to single thread page
         return redirect('thread', thread_id, 0)
+
+class BridgeAuthenticateView(View):
+    """View for register/login page"""
+
+    def get(self, request):
+        """GET register/login page"""
+        register_form = NewUserForm()
+        login_form = AuthenticationForm()
+        # render page with register/login forms
+        return render(
+            request=request,
+            template_name='login.html',
+            context={
+                'year': CUR_YEAR,
+                'user': request.user,
+                'register_form': register_form,
+                'login_form': login_form,
+            }
+        )
+
+    def post(self, request):
+        """POST user sign-up/login"""
+        if 'register' in request.POST:
+            form = NewUserForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                messages.success(request, f"Hi, {user.username}" )
+                return redirect(settings.LOGIN_REDIRECT_URL)
+            else:
+                messages.error(request, "Invalid information. Please try again.")
+        elif 'login' in request.POST:
+            form = AuthenticationForm(request, data=request.POST)
+            if form.is_valid():
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    messages.success(request, f"Hi, {username}." )
+                    return redirect(settings.LOGIN_REDIRECT_URL)
+                else:
+                    messages.error(request, "Invalid username or password.")
+            else:
+                messages.error(request, "Invalid username or password.")
+        # render login.html again on failed register/login
+        register_form = NewUserForm()
+        login_form = AuthenticationForm()
+        return render(
+            request=request,
+            template_name='login.html',
+            context={
+                'year': CUR_YEAR,
+                'user': request.user,
+                'register_form': register_form,
+                'login_form': login_form,
+            }
+        )
+
+class BridgeLogOutView(View):
+    def get(self, request):
+        user = request.user
+        logout(request)
+        messages.success(request, f"Bye, {user.username}." )
+        return redirect(settings.LOGOUT_REDIRECT_URL)
