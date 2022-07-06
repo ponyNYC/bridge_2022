@@ -3,9 +3,10 @@ from django.contrib.auth.models import User
 
 
 class Post(models.Model):
-    """abstract base model for Thread and Response"""
+    """Abstract base model for Thread and Response"""
     body = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+    # assign primary key from built in User model
     user = models.ForeignKey(
         User,
         blank = True,
@@ -18,7 +19,7 @@ class Post(models.Model):
 
 
 class Category(models.Model):
-    """model for bridgeapp_category table"""
+    """Model for bridgeapp_category table"""
     type = models.CharField(max_length=50, unique=True)
 
     def __str___(self):
@@ -26,7 +27,7 @@ class Category(models.Model):
 
 
 class Thread(Post):
-    """model for bridgeapp_thread table"""
+    """Model for bridgeapp_thread table"""
     # many-to-many relationship with Category
     categories = models.ManyToManyField(Category)
 
@@ -35,7 +36,7 @@ class Thread(Post):
 
 
 class Response(Post):
-    """model for bridgeapp_response table"""
+    """Model for bridgeapp_response table"""
     thread = models.ForeignKey(
         Thread,
         on_delete=models.CASCADE

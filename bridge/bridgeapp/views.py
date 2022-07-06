@@ -153,11 +153,13 @@ class BridgeThreadView(View):
         # redirect to single thread page
         return redirect('thread', thread_id, 0)
 
+
 class BridgeAuthenticateView(View):
     """View for register/login page"""
 
     def get(self, request):
         """GET register/login page"""
+        # get custom NewUserForm and built-in AuthenticationForm
         register_form = NewUserForm()
         login_form = AuthenticationForm()
         # render page with register/login forms
@@ -174,30 +176,40 @@ class BridgeAuthenticateView(View):
 
     def post(self, request):
         """POST user sign-up/login"""
+        # handles registration
         if 'register' in request.POST:
+            # get registration info
             form = NewUserForm(request.POST)
+            # create and login user on valid form info
             if form.is_valid():
                 user = form.save()
                 login(request, user)
                 messages.success(request, f"Hi, {user.username}" )
                 return redirect(settings.LOGIN_REDIRECT_URL)
+            # flash message on invalid form info
             else:
                 messages.error(request, "Invalid information. Please try again.")
+        # handles login
         elif 'login' in request.POST:
+            # get login credential
             form = AuthenticationForm(request, data=request.POST)
+            # check for valid form info
             if form.is_valid():
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
                 user = authenticate(username=username, password=password)
+                # login only on valid credential
                 if user is not None:
                     login(request, user)
                     messages.success(request, f"Hi, {username}." )
                     return redirect(settings.LOGIN_REDIRECT_URL)
+                # flash message on invalid credential
                 else:
                     messages.error(request, "Invalid username or password.")
+            # flash message on invliad form info
             else:
                 messages.error(request, "Invalid username or password.")
-        # render login.html again on failed register/login
+        # render login.html again on failed registration/login
         register_form = NewUserForm()
         login_form = AuthenticationForm()
         return render(
@@ -211,9 +223,12 @@ class BridgeAuthenticateView(View):
             }
         )
 
+
 class BridgeLogOutView(View):
+    """Templateless view for logout button"""
     def get(self, request):
         user = request.user
+        # log out and redirect to login page at once
         logout(request)
-        messages.success(request, f"Bye, {user.username}." )
+        messages.success(request, f"Bye, {user.username}.")
         return redirect(settings.LOGOUT_REDIRECT_URL)
