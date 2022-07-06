@@ -3,13 +3,13 @@ document.addEventListener("DOMContentLoaded", (e) => {
   // <textarea> (response.body) is preloaded with data
   const respForm = document.getElementById('response-form');
   const respText = respForm.body.value;
-  const showModelBtn = document.getElementById('response-form-btn');
+  const showModalBtn = document.getElementById('response-form-btn');
 
   if (respText) {
-    showModelBtn.click();
-    const modelHeader = document.querySelectorAll('.modal-header')[0];
-    const modelFooter = document.querySelectorAll('.modal-footer')[0];
-    const closeBtn = document.querySelectorAll('.btn-close')[0];
+    showModalBtn.click();
+    const modalHeader = document.querySelector('.modal-header');
+    const modalFooter = document.querySelector('.modal-footer');
+    const closeBtn = document.querySelector('.btn-close');
     const cancelBtn = document.getElementById('btn-cancel');
     const link = document.createElement('a');
     link.className = "btn btn-close";
@@ -18,11 +18,10 @@ document.addEventListener("DOMContentLoaded", (e) => {
     subBtn.className = "btn btn-secondary";
     subBtn.textContent = "Cancel";
     subBtn.href = respForm.action.slice(0,-1) + '0'
-    modelHeader.removeChild(closeBtn);
-    modelHeader.append(link);
-    modelFooter.removeChild(cancelBtn);
-    modelFooter.insertBefore(subBtn, modelFooter.firstChild)
-
-    // console.log(modelHeader, modelFooter, closeBtn, cancelBtn);
+    modalHeader.removeChild(closeBtn);
+    modalHeader.append(link);
+    modalFooter.removeChild(cancelBtn);
+    modalFooter.insertBefore(subBtn, modalFooter.firstChild)
+    // console.log(modalHeader, modalFooter, closeBtn, cancelBtn);
   }
 });
