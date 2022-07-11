@@ -2,9 +2,7 @@ from django import forms
 from django.db import connection
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Thread, Response
-
-from .models import Category
+from .models import Category, Thread, Response
 
 
 class ResponseForm(forms.ModelForm):

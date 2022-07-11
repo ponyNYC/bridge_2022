@@ -62,7 +62,9 @@
                             </li>
                             {% endfor %}
                             <li>
-                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                <a class="nav-link" href="{% url 'logout' %}"
+                                    >Logout</a
+                                >
                             </li>
                         </ul>
                     </div>
@@ -86,16 +88,16 @@
             {% if messages %}
             <ul class="messages list-group row text-center">
                 {% for message in messages %}
-                <li class="message list-group-item{% if message.tags == 'error' %} bg-warning{% else %} bg-info{% endif %}">
+                <li
+                    class="message list-group-item{% if message.tags == 'error' %} bg-warning{% else %} bg-info{% endif %}"
+                >
                     {{ message }}
                 </li>
                 {% endfor %}
             </ul>
             {% endif %}
         </header>
-        <main class="container pt-5">
-            {% block main %} {% endblock %}
-        </main>
+        <main class="container pt-5">{% block main %} {% endblock %}</main>
         <footer class="row bg-dark pt-2 pb-3 mt-auto">
             <div class="container">
                 <div class="d-flex justify-content-center align-items-center">
@@ -115,7 +117,7 @@
                     <a href="https://github.com/rlee794" target="_blank">
                         <img
                             class="profile rounded-circle"
-                            src="{% static '/images/avatar.jpeg' %}"
+                            src="{% static '/images/tony-profile.jpg' %}"
                             alt="Picture of Chung Kao"
                         />
                     </a>
