@@ -8,6 +8,18 @@
 >
     Answers
 </h1>
+<!-- Button trigger modal -->
+<div class="btn-container text-end">
+    <button
+        type="button"
+        id="response-form-btn"
+        class="btn btn-primary mb-5 shadow"
+        data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop"
+    >
+        Write a response
+    </button>
+</div>
 <div class="message w-100 p-3 pb-1 mb-4 rounded shadow">
     <p class="text-start">
         <i class="bi bi-person-circle"></i><i class="bi bi-dash-lg"></i
@@ -34,16 +46,6 @@
     </p>
 </a>
 {% endfor %}
-<!-- Button trigger modal -->
-<button
-    type="button"
-    id="response-form-btn"
-    class="btn btn-primary mb-5 shadow"
-    data-bs-toggle="modal"
-    data-bs-target="#staticBackdrop"
->
-    Write a response
-</button>
 <!-- Modal -->
 <div
     class="modal fade"
