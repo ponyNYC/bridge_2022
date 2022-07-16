@@ -19,11 +19,11 @@
     <!--Registration-->
     <div class="register-form p-3 rounded shadow col-11 col-sm-9 col-md-6 text-success">
         <div class="p-3 border border-light rounded d-flex flex-column">
-            <h3 class="mb-3">Register</h3>
+            <h3 class="mb-3">Sign Up</h3>
             <form method="POST" action="{% url 'login' %}"">
                 {% csrf_token %}
                 {{ register_form.as_p }}
-                <button class="btn btn-sm btn-outline-success" type="submit" name="register">Register</button>
+                <button class="btn btn-sm btn-outline-success" type="submit" name="register">Sign Up</button>
             </form>
         </div>
     </div>
